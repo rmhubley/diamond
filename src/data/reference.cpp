@@ -177,6 +177,8 @@ bool Database_file::load_seqs()
 	seek(start_offset);
 	size_t masked = 0;
 
+//RMH
+//int foo = 0;
 	for (size_t n = 0; n < seqs; ++n) {
 		read(ref_seqs::data_->ptr(n) - 1, ref_seqs::data_->length(n) + 2);
 		*(ref_seqs::data_->ptr(n) - 1) = sequence::DELIMITER;
@@ -188,6 +190,15 @@ bool Database_file::load_seqs()
 			Masking::get().remove_bit_mask(ref_seqs::data_->ptr(n), ref_seqs::data_->length(n));
 		if (!config.sfilt.empty() && strstr(ref_ids::get()[n].c_str(), config.sfilt.c_str()) == 0)
 			memset(ref_seqs::data_->ptr(n), value_traits.mask_char, ref_seqs::data_->length(n));
+// RMH
+//if ( foo == 0 ) {
+//printf("Ref begins with: %c%c%c%c%c%c%c%c%c\n", to_char(ref_seqs::data_->ptr(n)[0]),
+//        to_char(ref_seqs::data_->ptr(n)[1]), to_char(ref_seqs::data_->ptr(n)[2]),
+//        to_char(ref_seqs::data_->ptr(n)[3]), to_char(ref_seqs::data_->ptr(n)[4]),
+//        to_char(ref_seqs::data_->ptr(n)[5]), to_char(ref_seqs::data_->ptr(n)[6]),
+//        to_char(ref_seqs::data_->ptr(n)[7]), to_char(ref_seqs::data_->ptr(n)[8]) );
+//foo = 1;
+//}     
 	}
 	timer.finish();
 	ref_seqs::get().print_stats();

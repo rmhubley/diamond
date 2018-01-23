@@ -45,6 +45,16 @@ void search_query_offset(Loc q,
 		const Loc s_pos = s[i->s];
 		const Letter* subject = ref_seqs::data_->data(s_pos);
 
+// RMH
+printf("foo: %d\n", i->s);
+printf("Subject: s_pos=%d seq=%d pos=%d  %c%c%c%c%c%c \n",
+                      s_pos,
+                      ref_seqs::get().local_position(s_pos).first,
+                      ref_seqs::get().local_position(s_pos).second,
+                      to_char(subject[0]), to_char(subject[1]),
+                      to_char(subject[2]), to_char(subject[3]),
+                      to_char(subject[4]), to_char(subject[5]));
+
 		/*if (count_id(query, subject) < config.id_n)
 			continue;*/
 
@@ -66,7 +76,8 @@ void search_query_offset(Loc q,
 			continue;
 
 		stats.inc(Statistics::TENTATIVE_MATCHES3);
-		//cout << ref_ids::get()[ref_seqs::get().local_position(s_pos).first].c_str() << endl;
+// RMH: Print the ID
+		cout << ref_ids::get()[ref_seqs::get().local_position(s_pos).first].c_str() << endl;
 		hf.push(s_pos, score);
 	}
 

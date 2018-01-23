@@ -181,6 +181,14 @@ private:
 		uint64_t key;
 		for (unsigned i = begin; i < end; ++i) {
 			const sequence seq = (*this)[i];
+
+ //RMH
+ const Letter *sq = seq.data();
+ printf("ENUM_SEEDS_HASHED: %c%c%c%c%c%c \n",
+                          to_char(sq[0]), to_char(sq[1]),
+                          to_char(sq[2]), to_char(sq[3]),
+                          to_char(sq[4]), to_char(sq[5]));
+
 			for (size_t shape_id = shape_range.first; shape_id < shape_range.second; ++shape_id) {
 				const shape& sh = shapes[shape_id];
 				if (seq.length() < sh.length_) continue;
@@ -193,6 +201,10 @@ private:
 							(*f)(key, position(i, j), shape_id);
 					++j;
 				}
+
+ // RMH     
+ printf("  - Shape: %d, key = %d\n", shape_id, key);
+
 			}
 		}
 		f->finish();
@@ -204,6 +216,13 @@ private:
 		uint64_t key;
 		for (unsigned i = begin; i < end; ++i) {
 			const sequence seq = (*this)[i];
+ //RMH
+ const Letter *sq = seq.data();
+ printf("ENUM_SEEDS_CONTIG: %c%c%c%c%c%c \n",
+                          to_char(sq[0]), to_char(sq[1]),
+                          to_char(sq[2]), to_char(sq[3]),
+                          to_char(sq[4]), to_char(sq[5]));
+
 			if (seq.length() < _it::length()) continue;
 			_it it(seq);
 			size_t j = 0;

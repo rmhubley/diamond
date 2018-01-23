@@ -43,6 +43,11 @@ struct Search_context
 	{ }
 	void operator()(unsigned thread_id, unsigned seedp) const
 	{
+                // RMH
+                //sorted_list::const_iterator foo = ref_idx.get_partition_cbegin(seedp);
+                //std::cout << "seedp = " << seedp << " and s_pos = " <<  foo[0] << std::endl;
+                //std::cout << "Calling align_partition with seedp = " << seedp << std::endl;
+
 		Statistics stat;
 		align_partition(seedp,
 			stat,
@@ -65,6 +70,10 @@ void process_shape(unsigned sid,
 	using std::vector;
 
 	::partition<unsigned> p(Const::seedp, config.lowmem);
+
+// RMH
+std::cout << " Number of sequence blocks?: " << p.parts << std::endl;
+
 	for (unsigned chunk = 0; chunk < p.parts; ++chunk) {
 
 		message_stream << "Processing query chunk " << query_chunk << ", reference chunk " << current_ref_block << ", shape " << sid << ", index chunk " << chunk << '.' << endl;
@@ -109,6 +118,51 @@ void process_shape(unsigned sid,
 
 		timer.go("Building seed filter");
 		frequent_seeds.build(sid, range, *ref_idx, query_idx);
+// RMH
+timer.finish();
+// RMH
+//   ref_seqs is a reference.cpp
+//   ref_seqs::data_ is a Sequence_set ( aliased here to "seqs" )
+//                      a Sequence_set is a String_set ( vector <char> data_[], vector <size_t> limits_ )
+//   ref_idx is a sorted_list 
+//
+//   Search_context is simple a structure holding the kmer-lists (sorted_lists) and
+//   a basic operator to call align_partition() with the cbegin partition iterator.
+//
+//  
+//  align_partition( hp, stats, sid, <sorted_list::iter>, <sorted_list::iter>,...)
+//    Seed_filter::run( q, <sorted_list::iter>, ...
+//      stage2_search(q, <sorted_list:iter>, ...
+//        search_query_offset(Loc q, <sorted_list::iter>, ...) (SSE2)
+//       
+//
+//  Q: Where does Const::seedptr come from?
+//     A: basic/const.h
+//             seedp = 1<<seedp_bits
+//             seedp_bits = 10
+//             At the time align_partition is called by a thread Const::seedp
+//             is the count of seed partitions.  I.e valid partion numbers are 
+//             0-(Const::seedp-1)
+//
+//   In the paper the author's indicate they use a 8 byte seed index entry.  
+//   The current version of Diamond uses a 9 byte entry: 
+//                    Key = 4 bytes, Position = 5 bytes
+//
+                // Just print out seed list for partition 0
+                //sorted_list::const_iterator foo = ref_idx->get_partition_cbegin(0);
+                //for ( int jj = 0; jj < foo.n; jj++ )
+                //{
+                //  const Letter* subject = ref_seqs::data_->data(foo[jj]);
+                //  printf("SortedList partition[0] idx[%d] key=%d s_pos=%d seq=%d pos=%d  %c%c%c%c%c%c \n",
+                 //         jj,
+                 //         foo.key(),
+                 //         foo[jj],
+                 //         ref_seqs::get().local_position(foo[jj]).first,
+                 //         ref_seqs::get().local_position(foo[jj]).second,
+                 //         to_char(subject[0]), to_char(subject[1]),
+                 //         to_char(subject[2]), to_char(subject[3]),
+                 //         to_char(subject[4]), to_char(subject[5]));
+               // }
 
 		timer.go("Searching alignments");
 		Search_context context(sid, *ref_idx, query_idx);
@@ -139,6 +193,7 @@ void run_ref_chunk(Database_file &db_file,
 	char *ref_buffer = sorted_list::alloc_buffer(ref_hst);
 
 	timer.go("Initializing temporary storage");
+        // RMH: This appears to open temporary files....
 	Trace_pt_buffer::instance = new Trace_pt_buffer(query_seqs::data_->get_length() / align_mode.query_contexts,
 		config.tmpdir,
 		config.query_bins);

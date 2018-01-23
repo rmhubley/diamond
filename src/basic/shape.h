@@ -165,13 +165,19 @@ struct shape
 	inline bool set_seed_reduced(Packed_seed &s, const Letter *seq) const
 	{
 		s = 0;
+// RMH
+//printf("Creating key (weight=%d):\n", weight_);
 		for (unsigned i = 0; i < weight_; ++i) {
 			Letter l = seq[positions_[i]];
+// RMH
+//printf(" - (%d) s=%ld\n", l, s);
 			if (l == value_traits.mask_char)
 				return false;
 			s *= Reduction::reduction.size();
 			s += uint64_t(l);
 		}
+// RMH
+//printf(" - Final key = %ld\n", s);
 		return true;
 	}
 

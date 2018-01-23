@@ -80,6 +80,12 @@ void query_register_search(vector<Finger_print>::const_iterator q,
 		FAST_COMPARE(q6, *s, stats, q_ref, s_ref, 5, 0, hits);
 		++s_ref;
 	}
+
+   // RMH
+   std::cout << "Register Search: total hits = " << hits.size() << std::endl;
+   if ( hits.size() > 0 )
+     std::cout << "              Hit[0]: " << hits.at(0).q << " " << hits.at(0).s << std::endl;
+
 }
 
 void inner_search(vector<Finger_print>::const_iterator q,
@@ -100,6 +106,12 @@ void inner_search(vector<Finger_print>::const_iterator q,
 		}
 		++q_ref;
 	}
+
+   // RMH
+   std::cout << "Inner Search: total hits = " << hits.size() << std::endl;
+   if ( hits.size() > 0 )
+     std::cout << "              Hit[0]: " << hits.at(0).q << " " << hits.at(0).s << std::endl;
+
 }
 
 void Seed_filter::tiled_search(vector<Finger_print>::const_iterator q,
@@ -141,5 +153,10 @@ void Seed_filter::run(const sorted_list::const_iterator &q, const sorted_list::c
 	tiled_search(vq.begin(), vq.end(), vs.begin(), vs.end(), Range_ref(vq.begin(), vs.begin()), 0);
 	std::sort(hits.begin(), hits.end());
 	stats.inc(Statistics::TENTATIVE_MATCHES1, hits.size());
+
+   // RMH
+   //std::cout << "After stage1 search: total hits = " << hits.size() << std::endl;
+   //std::cout << "Here and s_pos = " <<  s[hits.at(0).s] << std::endl;
+
 	stage2_search(q, s, hits, stats, out, sid);
 }

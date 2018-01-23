@@ -23,6 +23,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../data/sorted_list.h"
 #include "../search/trace_pt_buffer.h"
 #include "sse_dist.h"
+
+// RMH
+#include "../data/reference.h"
+
 #include "../dp/dp.h"
 #include "../util/intrin.h"
 
@@ -158,14 +162,41 @@ inline void align_partition(unsigned hp,
 #endif
 	Trace_pt_buffer::Iterator* out = new Trace_pt_buffer::Iterator (*Trace_pt_buffer::instance, thread_id);
 	Seed_filter seed_filter(stats, *out, sid);
+
+// RMH
+//if ( i.at_end() )
+//  std::cout << "Subject iterator is empty for partition " << hp << std::endl;
+//if ( j.at_end() )
+//  std::cout << "Query iterator is empty for partition " << hp << std::endl;
+//std::cout << " partition " << hp << " subj: " << i.n << " query: " << j.n << std::endl;
+
 	while(!i.at_end() && !j.at_end()) {
 		if(i.key() < j.key()) {
+// RMH
+//std::cout << "adv i" << std::endl;
 			++i;
 		} else if(j.key() < i.key()) {
+// RMH
+//std::cout << "adv j" << std::endl;
 			++j;
 		} else {
-			if(i[0] != 0)
+// RMH
+//std::cout << "adv both" << std::endl;
+			if(i[0] != 0) {
+
+// RMH
+// const Letter* subject = ref_seqs::data_->data(i[0]);
+// printf("Kmer-Pair: Sbj:seq=%d pos=%d Qry:seq=%d pos=%d  %c%c%c%c%c%c\n",
+//        ref_seqs::get().local_position(i[0]).first,
+//        ref_seqs::get().local_position(i[0]).second,
+//        ref_seqs::get().local_position(j[0]).first,
+//        ref_seqs::get().local_position(j[0]).second,
+//        to_char(subject[0]), to_char(subject[1]),
+//        to_char(subject[2]), to_char(subject[3]),
+//        to_char(subject[4]), to_char(subject[5]));
+
 				seed_filter.run(j, i);
+                        }
 			++i;
 			++j;
 		}

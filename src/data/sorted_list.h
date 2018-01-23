@@ -152,7 +152,12 @@ private:
 		}
 		void push(Packed_seed key, Loc value, const seedp_range &range)
 		{
+                        // RMH
+                        //std::cout << "Packed Seed: " << key << std::endl;
 			const unsigned p(seed_partition(key));
+                        // RMH
+                        //std::cout << "  seed_partition: " << p << std::endl;
+                        //std::cout << "  seed_partition_offset: " << seed_partition_offset(key) << std::endl;
 			if(range.contains(p)) {
 				assert(n[p] < BUFFER_SIZE);
 				buf[p][n[p]++] = entry (seed_partition_offset(key), value);
