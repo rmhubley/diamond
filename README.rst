@@ -1,3 +1,6 @@
+WARNING: This is an experimental FORK of the Diamond project.  Please see https://github.com/bbuchfink/diamond for the official Diamond tool.
+=====================================================================================
+
 Introduction
 ============
 DIAMOND is a sequence aligner for protein and translated DNA searches, designed for high performance analysis of big sequence data. The key features are:
